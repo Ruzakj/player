@@ -31,13 +31,13 @@ jobs:
         with:
           gradle-version: '9.6.0'
 
-      - name: Build release APK
+      - name: Build signed release APK
         run: gradle :app:assembleRelease --stacktrace
 
       - name: Enforce APK <= 20 MB
         shell: bash
         run: |
-          APK="app/build/outputs/apk/release/app-release-unsigned.apk"
+          APK="app/build/outputs/apk/release/app-release.apk"
           test -f "$APK"
           BYTES=$(stat -c%s "$APK")
           LIMIT=$((20 * 1024 * 1024))
@@ -47,9 +47,14 @@ jobs:
             exit 1
           fi
 
-      - name: Upload APK
+      - name: Verify APK signature
+        shell: bash
+        run: |
+          "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose "app/build/outputs/apk/release/app-release.apk"
+
+      - name: Upload installable APK
         uses: actions/upload-artifact@v4
         with:
-          name: RIC-Player-v0.1-release
-          path: app/build/outputs/apk/release/app-release-unsigned.apk
+          name: RIC-Player-v0.1-installable
+          path: app/build/outputs/apk/release/app-release.apk
           if-no-files-found: error
