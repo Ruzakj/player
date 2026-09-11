@@ -471,11 +471,15 @@ public class MainActivity extends ComponentActivity {
 
     private void applyScaleMode(int mode) {
         scaleMode = mode;
+        playerView.setScaleX(1f);
+        playerView.setScaleY(1f);
         if (mode == 1) {
-            playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FILL);
+            playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_ZOOM);
             scaleButton.setText("Fill");
         } else if (mode == 2) {
             playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_ZOOM);
+            playerView.setScaleX(1.15f);
+            playerView.setScaleY(1.15f);
             scaleButton.setText("Zoom");
         } else if (mode == 3) {
             playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT);
