@@ -1,0 +1,89 @@
+name: Keep screen awake during playback
+
+on:
+  push:
+    paths:
+      - '.github/workflows/keep-screen-awake.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Patch PlayerActivity stay-awake behavior
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          p = Path('app/src/main/java/com/ric/player/PlayerActivity.java')
+          s = p.read_text()
+
+          old = '''            @Override public void onIsPlayingChanged(boolean isPlaying) {
+                playPause.setText(isPlaying ? "Pause" : "Play");
+            }
+
+            @Override public void onPlaybackStateChanged(int playbackState) {
+                updateProgress();
+            }'''
+          new = '''            @Override public void onIsPlayingChanged(boolean isPlaying) {
+                playPause.setText(isPlaying ? "Pause" : "Play");
+                updateKeepScreenOn();
+            }
+
+            @Override public void onPlaybackStateChanged(int playbackState) {
+                updateProgress();
+                updateKeepScreenOn();
+            }'''
+          if old not in s:
+              raise SystemExit('player listener block not found')
+          s = s.replace(old, new, 1)
+
+          marker = '''    private void initControls() {'''
+          method = '''    private void updateKeepScreenOn() {
+        boolean keepAwake = player != null
+                && player.getPlayWhenReady()
+                && player.getPlaybackState() != Player.STATE_ENDED
+                && player.getPlaybackState() != Player.STATE_IDLE;
+        if (keepAwake) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        } else {
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        }
+        if (playerView != null) playerView.setKeepScreenOn(keepAwake);
+    }
+
+'''
+          if 'private void updateKeepScreenOn()' not in s:
+              if marker not in s:
+                  raise SystemExit('initControls marker not found')
+              s = s.replace(marker, method + marker, 1)
+
+          old = '''        updateResponsiveLayout(getResources().getConfiguration());
+        uiHandler.post(progressUpdater);'''
+          new = '''        updateResponsiveLayout(getResources().getConfiguration());
+        updateKeepScreenOn();
+        uiHandler.post(progressUpdater);'''
+          if old in s:
+              s = s.replace(old, new, 1)
+
+          p.write_text(s)
+          PY
+
+          git diff --check
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add app/src/main/java/com/ric/player/PlayerActivity.java
+          if git diff --cached --quiet; then
+            echo "No changes needed"
+            exit 0
+          fi
+          git commit -m "Keep screen awake during active playback"
+          git push origin main
