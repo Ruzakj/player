@@ -55,7 +55,7 @@ jobs:
       - name: Upload installable APK
         uses: actions/upload-artifact@v4
         with:
-          name: RIC-Player-v0.2-installable
+          name: RIC-Player-v0.3-installable
           path: app/build/outputs/apk/release/app-release.apk
           if-no-files-found: error
 
@@ -75,7 +75,7 @@ jobs:
       - name: Download installable APK
         uses: actions/download-artifact@v4
         with:
-          name: RIC-Player-v0.2-installable
+          name: RIC-Player-v0.3-installable
           path: apk
 
       - name: Emulator runtime smoke test
@@ -93,13 +93,15 @@ jobs:
             adb logcat -c
 
             adb shell am force-stop com.ric.player
-            adb shell am start -W -n com.ric.player/.MainActivity
+            adb shell am start -W -n com.ric.player/.PlayerActivity
             sleep 3
             test -n "$(adb shell pidof com.ric.player)"
 
-            adb shell am start -W -n com.ric.player/.MainActivity -a android.intent.action.VIEW -d "https://storage.googleapis.com/exoplayer-test-media-0/BigBuckBunny_320x180.mp4"
-            sleep 6
+            adb shell am start -W -n com.ric.player/.PlayerActivity -a android.intent.action.VIEW -d "https://storage.googleapis.com/exoplayer-test-media-0/BigBuckBunny_320x180.mp4"
+            sleep 7
             test -n "$(adb shell pidof com.ric.player)"
+
+            POS1=$(adb shell dumpsys media_session 2>/dev/null | grep -m1 -Eo 'position=[0-9]+' | cut -d= -f2 || true)
 
             adb shell settings put system accelerometer_rotation 0
             adb shell settings put system user_rotation 1
@@ -134,11 +136,17 @@ jobs:
             test -n "$(adb shell pidof com.ric.player)"
 
             adb shell dumpsys activity activities > activity.txt
-            if ! grep -Eiq 'PictureInPictureMode=true|picture.?in.?picture.*true' activity.txt; then
+            if ! grep -Eiq 'PictureInPictureMode=true|picture.?in.?picture.*true|mIsInPictureInPictureMode=true' activity.txt; then
               echo "PiP state was not reported by ActivityManager"
-              grep -i -C 3 'com.ric.player' activity.txt | tail -n 120 || true
+              grep -i -C 4 'com.ric.player' activity.txt | tail -n 160 || true
               exit 1
             fi
+
+            adb shell input keyevent KEYCODE_HOME
+            sleep 2
+            adb shell am start -W -n com.ric.player/.PlayerActivity
+            sleep 3
+            test -n "$(adb shell pidof com.ric.player)"
 
             adb logcat -d > logcat.txt
             if grep -E 'FATAL EXCEPTION|ANR in com\.ric\.player|Process: com\.ric\.player.*has died' logcat.txt; then
@@ -147,4 +155,4 @@ jobs:
               exit 1
             fi
 
-            echo "Runtime smoke test PASS: install, launch, online video, rotation, PiP, no fatal crash/ANR"
+            echo "Runtime smoke PASS: install, launch, online playback entry, rotation, PiP transition, foreground return, no fatal crash/ANR"
