@@ -19,49 +19,74 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:gravity="center_horizontal"
-        android:paddingHorizontal="10dp"
-        android:paddingVertical="12dp">
+        android:paddingStart="14dp"
+        android:paddingTop="14dp"
+        android:paddingEnd="14dp"
+        android:paddingBottom="16dp">
 
         <LinearLayout
             android:id="@+id/topBar"
             android:layout_width="match_parent"
-            android:layout_height="54dp"
+            android:layout_height="58dp"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:background="#52000000"
-            android:paddingHorizontal="5dp">
+            android:background="@drawable/player_glass_panel"
+            android:paddingStart="7dp"
+            android:paddingEnd="7dp">
 
             <Button
                 android:id="@+id/back"
-                android:layout_width="52dp"
-                android:layout_height="46dp"
+                style="@style/PlayerIconButton"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
                 android:text="‹"
-                android:textSize="22sp" />
+                android:textSize="25sp" />
 
-            <TextView
-                android:id="@+id/mediaTitle"
+            <LinearLayout
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:maxLines="1"
-                android:ellipsize="end"
-                android:paddingHorizontal="10dp"
-                android:text="RIC Player"
-                android:textColor="#FFFFFF"
-                android:textSize="15sp"
-                android:textStyle="bold" />
+                android:orientation="vertical"
+                android:gravity="center_vertical"
+                android:paddingStart="12dp"
+                android:paddingEnd="10dp">
+
+                <TextView
+                    android:id="@+id/mediaTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:text="RIC Player"
+                    android:textColor="#FFFFFFFF"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="Now playing"
+                    android:textColor="#99FFFFFF"
+                    android:textSize="10sp" />
+            </LinearLayout>
 
             <Button
                 android:id="@+id/subtitleTop"
-                android:layout_width="58dp"
-                android:layout_height="46dp"
-                android:text="CC" />
+                style="@style/PlayerIconButton"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:layout_marginEnd="7dp"
+                android:text="CC"
+                android:textSize="11sp" />
 
             <Button
                 android:id="@+id/pip"
-                android:layout_width="62dp"
-                android:layout_height="46dp"
-                android:text="PiP" />
+                style="@style/PlayerIconButton"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:text="▣"
+                android:textSize="17sp" />
         </LinearLayout>
 
         <Space
@@ -72,17 +97,57 @@
         <LinearLayout
             android:id="@+id/centerControls"
             android:layout_width="wrap_content"
-            android:layout_height="66dp"
+            android:layout_height="72dp"
             android:gravity="center"
             android:orientation="horizontal"
-            android:background="#46000000"
-            android:paddingHorizontal="5dp">
+            android:background="@drawable/player_glass_panel"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp">
 
-            <Button android:id="@+id/previous" android:layout_width="52dp" android:layout_height="52dp" android:text="|‹" />
-            <Button android:id="@+id/rewind" android:layout_width="58dp" android:layout_height="52dp" android:text="-10" />
-            <Button android:id="@+id/playPause" android:layout_width="78dp" android:layout_height="58dp" android:text="Play" />
-            <Button android:id="@+id/forward" android:layout_width="58dp" android:layout_height="52dp" android:text="+10" />
-            <Button android:id="@+id/next" android:layout_width="52dp" android:layout_height="52dp" android:text="›|" />
+            <Button
+                android:id="@+id/previous"
+                style="@style/PlayerIconButton"
+                android:layout_width="46dp"
+                android:layout_height="46dp"
+                android:text="|‹"
+                android:textSize="16sp" />
+
+            <Button
+                android:id="@+id/rewind"
+                style="@style/PlayerIconButton"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="7dp"
+                android:text="-10"
+                android:textSize="12sp" />
+
+            <Button
+                android:id="@+id/playPause"
+                style="@style/PlayerIconButton"
+                android:layout_width="62dp"
+                android:layout_height="62dp"
+                android:layout_marginStart="9dp"
+                android:layout_marginEnd="9dp"
+                android:text="▶"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/forward"
+                style="@style/PlayerIconButton"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:text="+10"
+                android:textSize="12sp" />
+
+            <Button
+                android:id="@+id/next"
+                style="@style/PlayerIconButton"
+                android:layout_width="46dp"
+                android:layout_height="46dp"
+                android:layout_marginStart="7dp"
+                android:text="›|"
+                android:textSize="16sp" />
         </LinearLayout>
 
         <Space
@@ -95,44 +160,52 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:background="#5C000000"
-            android:paddingHorizontal="6dp"
-            android:paddingVertical="5dp">
+            android:background="@drawable/player_glass_panel"
+            android:paddingStart="10dp"
+            android:paddingTop="7dp"
+            android:paddingEnd="10dp"
+            android:paddingBottom="9dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="44dp"
+                android:layout_height="40dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/currentTime"
-                    android:layout_width="52dp"
+                    android:layout_width="48dp"
                     android:layout_height="wrap_content"
                     android:text="00:00"
-                    android:textColor="#FFFFFF"
-                    android:textSize="12sp" />
+                    android:textColor="#EFFFFFFF"
+                    android:textSize="11sp"
+                    android:fontFamily="sans-serif-medium" />
 
                 <SeekBar
                     android:id="@+id/seekBar"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:max="1000" />
+                    android:max="1000"
+                    android:progressTint="#FFFFFFFF"
+                    android:thumbTint="#FFFFFFFF"
+                    android:progressBackgroundTint="#45FFFFFF" />
 
                 <TextView
                     android:id="@+id/duration"
-                    android:layout_width="52dp"
+                    android:layout_width="48dp"
                     android:layout_height="wrap_content"
                     android:gravity="end"
                     android:text="00:00"
-                    android:textColor="#FFFFFF"
-                    android:textSize="12sp" />
+                    android:textColor="#AFFFFFFF"
+                    android:textSize="11sp"
+                    android:fontFamily="sans-serif-medium" />
             </LinearLayout>
 
             <HorizontalScrollView
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="46dp"
+                android:fillViewport="false"
                 android:scrollbars="none">
 
                 <LinearLayout
@@ -142,14 +215,68 @@
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
-                    <Button android:id="@+id/openFile" android:layout_width="66dp" android:layout_height="44dp" android:text="File" />
-                    <Button android:id="@+id/openUrl" android:layout_width="66dp" android:layout_height="44dp" android:text="URL" />
-                    <Button android:id="@+id/speed" android:layout_width="70dp" android:layout_height="44dp" android:text="1.0x" />
-                    <Button android:id="@+id/subtitle" android:layout_width="88dp" android:layout_height="44dp" android:text="Subtitle" />
-                    <Button android:id="@+id/audioTrack" android:layout_width="76dp" android:layout_height="44dp" android:text="Audio" />
-                    <Button android:id="@+id/scaling" android:layout_width="78dp" android:layout_height="44dp" android:text="Fit" />
-                    <Button android:id="@+id/orientation" android:layout_width="102dp" android:layout_height="44dp" android:text="Auto" />
-                    <Button android:id="@+id/lock" android:layout_width="76dp" android:layout_height="44dp" android:text="Lock" />
+                    <Button
+                        android:id="@+id/openFile"
+                        style="@style/PlayerPillButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="36dp"
+                        android:text="File" />
+
+                    <Button
+                        android:id="@+id/openUrl"
+                        style="@style/PlayerPillButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="36dp"
+                        android:layout_marginStart="7dp"
+                        android:text="URL" />
+
+                    <Button
+                        android:id="@+id/speed"
+                        style="@style/PlayerPillButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="36dp"
+                        android:layout_marginStart="7dp"
+                        android:text="1.0x" />
+
+                    <Button
+                        android:id="@+id/subtitle"
+                        style="@style/PlayerPillButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="36dp"
+                        android:layout_marginStart="7dp"
+                        android:text="Subtitle" />
+
+                    <Button
+                        android:id="@+id/audioTrack"
+                        style="@style/PlayerPillButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="36dp"
+                        android:layout_marginStart="7dp"
+                        android:text="Audio" />
+
+                    <Button
+                        android:id="@+id/scaling"
+                        style="@style/PlayerPillButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="36dp"
+                        android:layout_marginStart="7dp"
+                        android:text="Fit" />
+
+                    <Button
+                        android:id="@+id/orientation"
+                        style="@style/PlayerPillButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="36dp"
+                        android:layout_marginStart="7dp"
+                        android:text="Auto" />
+
+                    <Button
+                        android:id="@+id/lock"
+                        style="@style/PlayerPillButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="36dp"
+                        android:layout_marginStart="7dp"
+                        android:text="Lock" />
                 </LinearLayout>
             </HorizontalScrollView>
         </LinearLayout>
@@ -160,30 +287,42 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:background="#D0111111"
-        android:paddingHorizontal="22dp"
-        android:paddingVertical="14dp"
+        android:background="@drawable/player_glass_panel"
+        android:paddingStart="26dp"
+        android:paddingTop="16dp"
+        android:paddingEnd="26dp"
+        android:paddingBottom="16dp"
         android:gravity="center"
-        android:textColor="#FFFFFF"
-        android:textSize="18sp"
+        android:textColor="#FFFFFFFF"
+        android:textSize="17sp"
+        android:textStyle="bold"
         android:visibility="gone" />
 
     <Button
         android:id="@+id/unlock"
-        android:layout_width="96dp"
-        android:layout_height="50dp"
+        style="@style/PlayerPillButton"
+        android:layout_width="wrap_content"
+        android:layout_height="44dp"
         android:layout_gravity="center_vertical|end"
         android:layout_marginEnd="18dp"
         android:text="Unlock"
+        android:textSize="13sp"
         android:visibility="gone" />
 
     <TextView
         android:id="@+id/errorState"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:background="#CC7A0000"
-        android:padding="10dp"
-        android:textColor="#FFFFFF"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginStart="18dp"
+        android:layout_marginEnd="18dp"
+        android:layout_marginBottom="22dp"
+        android:background="@drawable/player_glass_panel"
+        android:paddingStart="16dp"
+        android:paddingTop="11dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="11dp"
+        android:textColor="#FFFFD6D6"
+        android:textSize="13sp"
         android:visibility="gone" />
 </FrameLayout>
