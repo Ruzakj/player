@@ -86,7 +86,7 @@ jobs:
           profile: pixel_6
           disable-animations: true
           script: |
-            set -euo pipefail
+            set -eu
             APK="apk/app-release.apk"
             adb install -r "$APK"
             adb logcat -c
@@ -109,7 +109,9 @@ jobs:
             test -n "$(adb shell pidof com.ric.player)"
 
             SIZE=$(adb shell wm size | tail -1 | sed -E 's/.* ([0-9]+)x([0-9]+)/\1 \2/')
-            read W H <<< "$SIZE"
+            set -- $SIZE
+            W=$1
+            H=$2
             adb shell input tap $((W/2)) $((H/2))
             sleep 1
             adb shell uiautomator dump /sdcard/window.xml >/dev/null
