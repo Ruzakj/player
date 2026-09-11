@@ -61,7 +61,7 @@ jobs:
 
   runtime-smoke:
     needs: build
-    runs-on: macos-14
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -71,6 +71,12 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
+
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
 
       - name: Download installable APK
         uses: actions/download-artifact@v4
@@ -83,7 +89,7 @@ jobs:
         with:
           api-level: 35
           target: google_apis
-          arch: arm64-v8a
+          arch: x86_64
           profile: pixel_6
           disable-animations: true
           script: |
@@ -100,8 +106,6 @@ jobs:
             adb shell am start -W -n com.ric.player/.PlayerActivity -a android.intent.action.VIEW -d "https://storage.googleapis.com/exoplayer-test-media-0/BigBuckBunny_320x180.mp4"
             sleep 7
             test -n "$(adb shell pidof com.ric.player)"
-
-            POS1=$(adb shell dumpsys media_session 2>/dev/null | grep -m1 -Eo 'position=[0-9]+' | cut -d= -f2 || true)
 
             adb shell settings put system accelerometer_rotation 0
             adb shell settings put system user_rotation 1
