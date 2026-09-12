@@ -3,31 +3,10 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
     <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
-
-    <application
-        android:allowBackup="true"
-        android:label="RIC Player"
-        android:theme="@style/Theme.RicPlayer"
-        android:usesCleartextTraffic="true">
-        <activity
-            android:name=".PlayerActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
-            android:exported="true"
-            android:resizeableActivity="true"
-            android:supportsPictureInPicture="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="http" />
-                <data android:scheme="https" />
-                <data android:scheme="content" />
-                <data android:scheme="file" />
-            </intent-filter>
+    <application android:allowBackup="true" android:icon="@drawable/ic_launcher" android:roundIcon="@drawable/ic_launcher" android:label="RIC Player" android:theme="@style/Theme.RicPlayer" android:usesCleartextTraffic="true">
+        <activity android:name=".PlayerActivity" android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode" android:exported="true" android:resizeableActivity="true" android:supportsPictureInPicture="true">
+            <intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent-filter>
+            <intent-filter><action android:name="android.intent.action.VIEW"/><category android:name="android.intent.category.DEFAULT"/><category android:name="android.intent.category.BROWSABLE"/><data android:scheme="http"/><data android:scheme="https"/><data android:scheme="content"/><data android:scheme="file"/></intent-filter>
         </activity>
     </application>
 </manifest>
