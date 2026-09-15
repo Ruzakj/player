@@ -1,0 +1,90 @@
+name: Lock Player Orientation Fix
+
+on:
+  push:
+    paths:
+      - '.github/workflows/lock-orientation-fix.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Patch player lock orientation
+        run: |
+          python <<'PY'
+          from pathlib import Path
+          p=Path('app/src/main/java/com/ric/player/PlayerActivity.java')
+          s=p.read_text()
+          old='''    private void setLocked(boolean value) {
+        locked = value;
+        seekBar.setEnabled(!locked);
+        if (locked) {
+            uiHandler.removeCallbacks(hideControlsRunnable);
+            controlsOverlay.setVisibility(View.GONE);
+            unlockButton.setVisibility(View.VISIBLE);
+        } else {
+            unlockButton.setVisibility(View.GONE);
+            setControlsVisible(true);
+            scheduleAutoHide();
+        }
+    }'''
+          new='''    private void setLocked(boolean value) {
+        locked = value;
+        seekBar.setEnabled(!locked);
+        if (locked) {
+            lockCurrentOrientation();
+            uiHandler.removeCallbacks(hideControlsRunnable);
+            controlsOverlay.setVisibility(View.GONE);
+            unlockButton.setVisibility(View.VISIBLE);
+        } else {
+            restoreSelectedOrientation();
+            unlockButton.setVisibility(View.GONE);
+            setControlsVisible(true);
+            scheduleAutoHide();
+        }
+    }
+
+    private void lockCurrentOrientation() {
+        int rotation = getWindowManager().getDefaultDisplay().getRotation();
+        int orientation = getResources().getConfiguration().orientation;
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            if (rotation == android.view.Surface.ROTATION_270) {
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE);
+            } else {
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+            }
+        } else if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            if (rotation == android.view.Surface.ROTATION_180) {
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT);
+            } else {
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+            }
+        } else {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
+        }
+    }
+
+    private void restoreSelectedOrientation() {
+        applyOrientationMode(orientationMode, false);
+    }'''
+          if old not in s:
+              raise SystemExit('setLocked block not found; refusing unsafe patch')
+          p.write_text(s.replace(old,new,1))
+          PY
+          rm -f .github/workflows/lock-orientation-fix.yml
+      - name: Commit source fix
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add -A
+          git diff --cached --quiet && exit 0
+          git commit -m "Lock screen orientation with player controls"
+          git push
